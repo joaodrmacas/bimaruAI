@@ -83,19 +83,23 @@ class Board:
             hint = stdin.readline().split()
             row, col = int(hint[1]), int(hint[2])
             value = hint[3]
-            ship = ShipCell((row,col),value)
-            board.shipsPlaced.append(ship)
+            if value!='W':
+                ship = (row,col)
+                board.shipsPlaced.append(ship)
             if value=='C':
                 board.shipsLeft[0]-=1
             board.board[row][col] = value
         return board
     
-    def get_inferences(self,arr):
+    def get_inferences(self):
         self.ColumnsAndLinesDoneInference()
         print(self.row_counts)
         print(self.col_counts)
-        for coord in arr:
+        for coord in self.shipsPlaced:
             self.surroundedShipInference(coord[0],coord[1])
+        print(self.shipsLeft)
+        self.spaceLeftHorizontalsInference()
+        print(self.shipsLeft)
 
     def print_board(self) -> None:
         for i in range(10):
@@ -210,8 +214,6 @@ class Board:
         else:
             print("surroundedShipInference error: unknown cell type")
 
-
-
     # mete agua nas linhas e colunas que ja estao feitas.
     def ColumnsAndLinesDoneInference(self):
         for i in range(10):
@@ -225,22 +227,75 @@ class Board:
                         self.board[k][i]="."
 
     
-    def shipInference(self):
-        for ship in self.shipsPlaced:
-            # verificar 1x2
-            if self.shipsLeft[2]:
+    # def shipInference(self):
+    #     for ship in self.shipsPlaced:
+    #         # verificar 1x2
+    #         if self.shipsLeft[2]:
                 
-                if ship.value == 'l':
-                    if self.board[ship.coord[0]][ship.coord[1]+1]=='r':
-                        self.shipsLeft[2]-=1
-                        self.row_counts[ship.coord[0]]-=1 
+    #             if ship.value == 'l':
+    #                 if self.board[ship.coord[0]][ship.coord[1]+1]=='r':
+    #                     self.shipsLeft[2]-=1
+    #                     self.row_counts[ship.coord[0]]-=1 
                         
-                    if self.board[ship.coord[0]+1][ship.coord[1]]!=:
+    #                 if self.board[ship.coord[0]+1][ship.coord[1]]!=:
 
             #verifcicar 1x3
 
-    def spaceLeftHorizontalsInference(self):
+    def spaceLeftInference(self):
         for i in range(10):
+            if (self.row_counts[i]!=0):
+                coord = (0,0)
+                inarow = 0
+                emptycellscount = 0
+                maxrow=0
+                for j in range(10):
+                    if self.board[i][j]=='0':
+                        coord = (i,j)
+                        inarow+=1
+                        emptycellscount+=1
+                    else:
+                        if (inarow>maxrow):
+                            maxrow=inarow
+                        inarow=0
+                if(inarow>maxrow):
+                    maxrow=inarow
+                if (maxrow==self.row_counts[i] and emptycellscount==self.row_counts[i]):
+                    #adicionar barco
+                    self.shipsLeft[maxrow-1]-=1 #retira o barco adicionado dos shipsLeft
+                    if maxrow==1:
+                        self.board[coord[0]][coord[1]] = 'c'
+                    else:
+                        self.board[coord[0]][coord[1]]= 'r'
+                        for k in range(1,maxrow-1): #meter posicoes do middle
+                            self.board[coord[0]-k][coord[1]]='m'
+                        self.board[coord[0]-maxrow-1]='l'
+
+            if (self.col_counts[i]!=0):
+                coord= (0,0)
+                inarow= 0
+                emptycellscount= 0
+                maxrow= 0
+                for j in range(10):
+                    if self.board[j][i]=='0':
+                        coord=(j,i)
+                        inarow+=1
+                        emptycellscount+=1
+                    else:
+                        if (inarow>maxrow):
+                            maxrow=inarow
+                        inarow=0
+                if(inarow>maxrow):
+                    maxrow=inarow
+                if(maxrow==self.col_counts[i] and emptycellscount==self.row_counts[i]):
+                    self.shipsLeft[maxrow-1]-=1
+                    if maxrow==1:
+                        self.board[coord[0]][coord[1]]='c'
+                    else:
+                        self.board[coord[0]][coord[1]]='b'
+                        for k in range(1,maxrow-1):
+                            self.board[coord[0]-k][coord[1]]='m'
+                        self.board[coord[0]-maxrow-1]='u'
+
             
     # TODO: outros metodos da classe
 
@@ -284,7 +339,8 @@ class Bimaru(Problem):
 if __name__ == "__main__":
     # TODO:
     a = Board.parse_instance()
-    a.get_inferences(a.shipsPlaced)
+    print(a.shipsPlaced)
+    a.get_inferences()
     a.print_board()
     # Ler o ficheiro do standard input,
     # Usar uma técnica de procura para resolver a instância,
