@@ -310,7 +310,7 @@ class Board:
                         exit()
                     
 
-    
+    #Pode dar merda se houver 2 peças do mesmo barco no tabuleiro.TODO
     def shipCompleteInference(self):
         for ship in self.shipsLeft:
             #verificar se ta nas bordas, se não tiver percorrer a procura de uma agua, ou de um right ou de um middle para inferirmos mais
@@ -322,6 +322,7 @@ class Board:
                     self.col_counts[8]-=1
                     self.col_counts[9]-=1
                     self.shipsLeft[1]-=1
+                    continue
                 
                 #se tiver uma agua 2 coordenadas a direita então é um barco de 2
                 if ship[1]<8 and (self.board[ship[0]][ship[1]+2]=='w' or self.board[ship[0]][ship[1]+2]=='.'):
@@ -330,6 +331,7 @@ class Board:
                     self.col_counts[ship[1]]-=1
                     self.col_counts[ship[1]+1]-=1
                     self.shipsLeft[1]-=1
+                    continue
                 
                 #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
                 elif ship[1]<7 and self.shipsLeft[1]==0 and (self.board[ship[0]][ship[1]+3]=='w' or self.board[ship[0]][ship[1]+3]=='.'):
@@ -340,6 +342,7 @@ class Board:
                     self.col_counts[ship[1]+1]-=1
                     self.col_counts[ship[1]+2]-=1
                     self.shipsLeft[2]-=1
+                    continue
                 
                 #se não houver barcos de 2 nem 3 e tiver uma agua 4 coordenadas a direita então é um barco de 4
                 elif ship[1]<6 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]][ship[1]+4]=='w' or self.board[ship[0]][ship[1]+4]=='.'):
@@ -352,26 +355,30 @@ class Board:
                     self.col_counts[ship[1]+2]-=1
                     self.col_counts[ship[1]+3]-=1
                     self.shipsLeft[3]-=1
+                    continue
 
                 #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
                 for i in range(2,min(4,10-ship[1])):
-                    if self.board[ship[0],ship[1]+i]=='r':
+                    if self.board[ship[0]][ship[1]+i]=='r':
                         if (i==2):
-                            self.board[ship[0],ship[1]+1]='m'
+                            self.board[ship[0]][ship[1]+1]='m'
                             self.shipsLeft[2]-=1
                             self.row_counts[ship[0]]-=3
                             self.col_counts[ship[1]]-=1
                             self.col_counts[ship[1]+1]-=1
                             self.col_counts[ship[1]+2]-=1
+                            break
                         if (i==3):
-                            self.board[ship[0],ship[1]+1]='m'
-                            self.board[ship[0],ship[1]+2]='m'
+                            self.board[ship[0]][ship[1]+1]='m'
+                            self.board[ship[0]][ship[1]+2]='m'
                             self.shipsLeft[3]-=1
                             self.row_counts[ship[0]]-=4
                             self.col_counts[ship[1]]-=1
                             self.col_counts[ship[1]+1]-=1
                             self.col_counts[ship[1]+2]-=1
                             self.col_counts[ship[1]+3]-=1
+                            break
+                continue
 
             if self.board[ship[0]][ship[1]]=='r':
                 #se estiver na penultima coluna
@@ -381,6 +388,7 @@ class Board:
                     self.col_counts[0]-=1
                     self.col_counts[1]-=1
                     self.shipsLeft[1]-=1
+                    continue
                 
                 #se tiver uma agua 2 coordenadas a direita então é um barco de 2
                 if ship[1]>1 and (self.board[ship[0]][ship[1]-2]=='w' or self.board[ship[0]][ship[1]-2]=='.'):
@@ -389,6 +397,7 @@ class Board:
                     self.col_counts[ship[1]]-=1
                     self.col_counts[ship[1]-1]-=1
                     self.shipsLeft[1]-=1
+                    continue
                 
                 #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
                 elif ship[1]>2 and self.shipsLeft[1]==0 and (self.board[ship[0]][ship[1]-3]=='w' or self.board[ship[0]][ship[1]-3]=='.'):
@@ -399,6 +408,7 @@ class Board:
                     self.col_counts[ship[1]-1]-=1
                     self.col_counts[ship[1]-2]-=1
                     self.shipsLeft[2]-=1
+                    continue
                 
                 #se não houver barcos de 2 nem 3 e tiver uma agua 4 coordenadas a direita então é um barco de 4
                 elif ship[1]>3 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]][ship[1]-4]=='w' or self.board[ship[0]][ship[1]-4]=='.'):
@@ -411,28 +421,159 @@ class Board:
                     self.col_counts[ship[1]-2]-=1
                     self.col_counts[ship[1]-3]-=1
                     self.shipsLeft[3]-=1
+                    continue
 
                 #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
                 #TODO
                 for i in range(2,min(4,ship[1])):
-                    if self.board[ship[0],ship[1]-i]=='l':
+                    if self.board[ship[0]][ship[1]-i]=='l':
                         if (i==2):
-                            self.board[ship[0],ship[1]-1]='m'
+                            self.board[ship[0]][ship[1]-1]='m'
                             self.shipsLeft[2]-=1
                             self.row_counts[ship[0]]-=3
                             self.col_counts[ship[1]]-=1
                             self.col_counts[ship[1]-1]-=1
                             self.col_counts[ship[1]-2]-=1
+                            break
                         if (i==3):
-                            self.board[ship[0],ship[1]-1]='m'
-                            self.board[ship[0],ship[1]-2]='m'
+                            self.board[ship[0]][ship[1]-1]='m'
+                            self.board[ship[0]][ship[1]-2]='m'
                             self.shipsLeft[3]-=1
                             self.row_counts[ship[0]]-=4
                             self.col_counts[ship[1]]-=1
                             self.col_counts[ship[1]-1]-=1
                             self.col_counts[ship[1]-2]-=1
                             self.col_counts[ship[1]-3]-=1
+                            break
+                continue
 
+            if self.board[ship[0]][ship[1]]=='t':
+                #se estiver na penultima coluna
+                if ship[0]==8:
+                    self.board[ship[0]+1][ship[1]]='b'
+                    self.col_counts[ship[1]]-=2
+                    self.row_counts[8]-=1
+                    self.row_counts[9]-=1
+                    self.shipsLeft[1]-=1
+                    continue
+
+                if ship[0]<8 and (self.board[ship[0]+2][ship[1]]=='w' or self.board[ship[0]+2][ship[1]]=='.'):
+                    self.board[ship[0]+1][ship[1]]='b'
+                    self.col_counts[ship[1]]-=2
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.shipsLeft[1]-=1
+                    continue
+                
+                #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
+                elif ship[0]<7 and self.shipsLeft[1]==0 and (self.board[ship[0]+3][ship[1]]=='w' or self.board[ship[0]+3][ship[1]]=='.'):
+                    self.board[ship[0]+2][ship[1]]='b'
+                    self.board[ship[0]+1][ship[1]]='m'
+                    self.col_counts[ship[1]]-=3
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.row_counts[ship[0]+2]-=1
+                    self.shipsLeft[2]-=1
+                    continue
+
+                elif ship[0]<6 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]+4][ship[1]]=='w' or self.board[ship[0]+4][ship[1]]=='.'):
+                    self.board[ship[0]+3][ship[1]]='b'
+                    self.board[ship[0]+2][ship[1]]='m'
+                    self.board[ship[0]+1][ship[1]]='m'
+                    self.col_counts[ship[1]]-=4
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.row_counts[ship[0]+2]-=1
+                    self.row_counts[ship[0]+3]-=1
+                    self.shipsLeft[3]-=1
+                    continue
+
+                #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
+                for i in range(2,min(4,10-ship[0])):
+                    if self.board[ship[0]+i][ship[1]]=='b':
+                        if (i==2):
+                            self.board[ship[0]+1][ship[1]]='m'
+                            self.shipsLeft[2]-=1
+                            self.col_counts[ship[1]]-=3
+                            self.row_counts[ship[0]]-=1
+                            self.row_counts[ship[0]+1]-=1
+                            self.row_counts[ship[0]+2]-=1
+                            break
+                        if (i==3):
+                            self.board[ship[0]+1][ship[1]]='m'
+                            self.board[ship[0]+2][ship[1]]='m'
+                            self.shipsLeft[3]-=1
+                            self.col_counts[ship[1]]-=4
+                            self.row_counts[ship[0]]-=1
+                            self.row_counts[ship[0]+1]-=1
+                            self.row_counts[ship[0]+2]-=1
+                            self.row_counts[ship[0]+3]-=1
+                            break
+                
+                continue
+
+            if self.board[ship[0]][ship[1]]=='b':
+                #se estiver na penultima coluna
+                if ship[0]==1:
+                    self.board[ship[0]-1][ship[1]]='t'
+                    self.col_counts[ship[1]]-=2
+                    self.row_counts[0]-=1
+                    self.row_counts[1]-=1
+                    self.shipsLeft[1]-=1
+                    continue
+
+                if ship[0]>1 and (self.board[ship[0]-2][ship[1]]=='w' or self.board[ship[0]-2][ship[1]]=='.'):
+                    self.board[ship[0]-1][ship[1]]='t'
+                    self.col_counts[ship[1]]-=2
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]-1]-=1
+                    self.shipsLeft[1]-=1
+                    continue
+                
+                #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
+                elif ship[0]>2 and self.shipsLeft[1]==0 and (self.board[ship[0]-3][ship[1]]=='w' or self.board[ship[0]-3][ship[1]]=='.'):
+                    self.board[ship[0]-2][ship[1]]='t'
+                    self.board[ship[0]-1][ship[1]]='m'
+                    self.col_counts[ship[1]]-=3
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]-1]-=1
+                    self.row_counts[ship[0]-2]-=1
+                    self.shipsLeft[2]-=1
+                    continue
+
+                elif ship[0]>3 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]-4][ship[1]]=='w' or self.board[ship[0]-4][ship[1]]=='.'):
+                    self.board[ship[0]-3][ship[1]]='t'
+                    self.board[ship[0]-2][ship[1]]='m'
+                    self.board[ship[0]-1][ship[1]]='m'
+                    self.col_counts[ship[1]]-=4
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]-1]-=1
+                    self.row_counts[ship[0]-2]-=1
+                    self.row_counts[ship[0]-3]-=1
+                    self.shipsLeft[3]-=1
+                    continue
+
+                #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
+                for i in range(2,min(4,ship[0])):
+                    if self.board[ship[0]-i][ship[1]]=='t':
+                        if (i==2):
+                            self.board[ship[0]-1][ship[1]]='m'
+                            self.shipsLeft[2]-=1
+                            self.col_counts[ship[1]]-=3
+                            self.row_counts[ship[0]]-=1
+                            self.row_counts[ship[0]-1]-=1
+                            self.row_counts[ship[0]-2]-=1
+                            break
+                        if (i==3):
+                            self.board[ship[0]-1][ship[1]]='m'
+                            self.board[ship[0]-2][ship[1]]='m'
+                            self.shipsLeft[3]-=1
+                            self.col_counts[ship[1]]-=4
+                            self.row_counts[ship[0]]-=1
+                            self.row_counts[ship[0]-1]-=1
+                            self.row_counts[ship[0]-2]-=1
+                            self.row_counts[ship[0]-3]-=1
+                            break
     
     def spaceLeftInference(self):
         for i in range(10):
