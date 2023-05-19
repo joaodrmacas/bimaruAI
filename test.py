@@ -1,3 +1,2 @@
-a = ['0','0','0','0','0']
-a[0]='BMU'
-print(a)
+for i in range(2,min(4,3)):
+    print(i)
