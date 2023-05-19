@@ -3,8 +3,8 @@
 # Além das funções e classes já definidas, podem acrescentar outras que considerem pertinentes.
 
 # Grupo 00:
-# 00000 Nome1
-# 00000 Nome2
+# 103369 Miguel o grande
+# 000000 joao o pequeno
 
 import sys
 from sys import stdin
