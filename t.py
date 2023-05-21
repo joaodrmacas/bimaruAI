@@ -40,11 +40,25 @@ class Board:
         self.board = [['0' for _ in range(10)] for _ in range(10)]
         self.row_counts = row_counts
         self.col_counts = col_counts
+        self.initialHints = []
         self.hintedShips = []
         self.shipsLeft = [4,3,2,1]
 
     def noHintedShips(self):
         return True if not self.hintedShips else False
+
+    def updateInitialHints(self):
+        for hint in self.initialHints:
+            row,col,value = hint
+            self.board[row][col] = value
+
+    def hintsEmpty(self):
+        for i in range(10):
+            if self.col_counts[i]!=0:
+                return False
+            if self.row_counts[i]!=0:
+                return False
+        return True
 
     def noShipsLeft(self):
         for i in range(4):
@@ -52,23 +66,709 @@ class Board:
                 return False
         return True
 
-    def get_value(self, row: int, col: int) -> str:
-        """Devolve o valor na respetiva posição do tabuleiro."""
-        return self.board[row][col]
+    def updateSurroundOfAction(self,action):
+        row,col,value,size = action
 
-    def adjacent_vertical_values(self, row: int, col: int):
-        """Devolve os valores imediatamente acima e abaixo,
-        respectivamente."""
-        if row==9:
-            return (None,self.board[row-1][col])
-        elif row==0:
-            return (self.board[row+1][col],None)
-        return (self.board[row+1][col],self.board[row-1][col])
+        if size==1:
+            if row!=0:
+                self.board[row-1][col]='.'
+                if col!=0:
+                    self.board[row-1][col-1]='.'
+                if col!=9:
+                    self.board[row-1][col+1]='.'
+            if row != 9:
+                self.board[row+1][col]='.'
+                if col!=9:
+                    self.board[row+1][col+1]='.'
+                if col!=0:
+                    self.board[row+1][col-1]='.'
+            if col!= 9:
+                self.board[row][col+1]='.'
+            if col != 0:
+                self.board[row][col-1]='.'
+            return
 
-    def adjacent_horizontal_values(self, row: int, col: int):
-        """Devolve os valores imediatamente à esquerda e à direita,
-        respectivamente."""
-        return (self.board[row][col+1],self.board[row][col-1])
+        if value=='l':
+            for i in range(size):
+                if i==0:
+                    if row!=9:
+                        self.board[row+1][col]='.'
+                        if col!=0:
+                            self.board[row+1][col-1]='.'
+                    if row!=0:
+                        self.board[row-1][col]='.'
+                        if col!=0:
+                            self.board[row-1][col-1]='.'
+                    if col!=0:
+                        self.board[row][col-1]='.'
+                
+                elif i==size-1:
+                    if row!=9:
+                        self.board[row+1][col+i]='.'
+                        if col+i!=9:
+                            self.board[row+1][col+1+i]='.'
+                    if row!=0:
+                        self.board[row-1][col+i]='.'
+                        if col+i!=9:
+                            self.board[row-1][col+1+i]='.'
+                    if col+i!=9:
+                        self.board[row][col+1+i]='.'
+
+                else:
+                    if row!=9:
+                        self.board[row+1][col+i]='.'
+                    if row!=0:
+                        self.board[row-1][col+i]='.'
+            
+            return
+
+        if value=='t':
+            for i in range(size):
+                if i==0:
+                    if col!=9:
+                        self.board[row][col+1]='.'
+                        if row!=0:
+                            self.board[row-1][col+1]='.'
+                    if col!=0:
+                        self.board[row][col-1]='.'
+                        if row!=0:
+                            self.board[row-1][col-1]='.'
+                    if row!=0:
+                        self.board[row-1][col]='.'
+                
+                elif i==size-1:
+                    if col!=9:
+                        self.board[row+i][col+1]='.'
+                        if row+i!=9:
+                            self.board[row+1+i][col+1]='.'
+                    
+                    if col!=0:
+                        self.board[row+i][col-1]='.'
+                        if row+i!=9:
+                            self.board[row+1+i][col-1]='.'
+                    if row+i!=9:
+                        self.board[row+1+i][col]='.'
+
+                else:
+                    if col!=9:
+                        self.board[row+i][col+1]='.'
+                    if row!=0:
+                        self.board[row+i][col-1]='.'
+
+            return
+        
+        print('ERROR SurroundedAction')
+        return
+
+    def updateSurroundOfCell(self,cell):
+        row,col,value = cell
+        min_coord = 0
+        max_coord=9
+        if value=='c':
+            if row!=0:
+                self.board[row-1][col]='.'
+                if col!=0:
+                    self.board[row-1][col-1]='.'
+                if col!=9:
+                    self.board[row-1][col+1]='.'
+            if row != 9:
+                self.board[row+1][col]='.'
+                if col!=9:
+                    self.board[row+1][col+1]='.'
+                if col!=0:
+                    self.board[row+1][col-1]='.'
+            if col!= 9:
+                self.board[row][col+1]='.'
+            if col != 0:
+                self.board[row][col-1]='.'
+            
+        if value=='l':
+            if row!=9:
+                self.board[row+1][col]='.'
+                if col!=0:
+                    self.board[row+1][col-1]='.'
+                if col!=9:
+                    self.board[row+1][col+1]='.'
+            if row!=0:
+                self.board[row-1][col]='.'
+                if col!=0:
+                    self.board[row-1][col-1]='.'
+                if col!=9:
+                    self.board[row-1][col+1]='.'
+            if col!=0:
+                self.board[row][col-1]='.'
+
+        if value=='r':
+            if row!=9:
+                self.board[row+1][col]='.'
+                if col!=9:
+                    self.board[row+1][col+1]='.'
+                if col!=0:
+                    self.board[row+1][col-1]='.'
+            if row!=0:
+                self.board[row-1][col]='.'
+                if col!=9:
+                    self.board[row-1][col+1]='.'
+                if col!=0:
+                    self.board[row-1][col-1]='.'
+            if col!=9:
+                self.board[row][col+1]='.' 
+             
+        if value=='t':
+            if col!=9:
+                self.board[row][col+1]='.'
+                if row!=0:
+                    self.board[row-1][col+1]='.'
+                if row!=9:
+                    self.board[row+1][col+1]='.'
+            if col!=0:
+                self.board[row][col-1]='.'
+                if row!=0:
+                    self.board[row-1][col-1]='.'
+                if row!=9:
+                    self.board[row+1][col-1]='.'
+            if row!=0:
+                self.board[row-1][col]='.'
+
+        if value=='b':
+            if col!=9:
+                self.board[row][col+1]='.'
+                if row!=9:
+                    self.board[row+1][col+1]='.'
+                if row!=0:
+                    self.board[row-1][col+1]='.'
+            
+            if col!=0:
+                self.board[row][col-1]='.'
+                if row!=9:
+                    self.board[row+1][col-1]='.'
+                if row !=0:
+                    self.board[row-1][col-1]='.'
+            if row!=9:
+                self.board[row+1][col]='.'
+
+        if value=='m':
+            for i in range(max(row - 1, min_coord), min(row + 2, max_coord + 1)):
+                for j in range(max(col - 1, min_coord), min(col + 2, max_coord + 1)):
+                    if i != row and j != col and abs(row - i) == abs(col - j):
+                        if (self.board[i][j]!='w'):
+                            self.board[i][j] = '.'
+
+    def checkFullShips(self):
+        for ship in self.hintedShips:
+            # verificar na horizontal
+            if self.board[ship[0]][ship[1]] == 'l':
+                if (self.board[ship[0]][ship[1]+1]=='r'):
+                    #adciona um barco 1x2 horizontal
+                    self.shipsLeft[1]-=1
+                    self.row_counts[ship[0]]-=2
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]+1]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0],ship[1]+1))
+                    continue
+
+                elif(self.board[ship[0]][ship[1]+1]=='m') and self.board[ship[0]][ship[1]+2]=='r':
+                    #adciona um barco 1x3 horizontal
+                    self.shipsLeft[2]-=1
+                    self.row_counts[ship[0]]-=3
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]+1]-=1
+                    self.col_counts[ship[1]+2]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0],ship[1]+1))
+                    self.hintedShips.remove((ship[0],ship[1]+2))
+                    continue
+
+                elif(self.board[ship[0]][ship[1]+1]=='m') and self.board[ship[0]][ship[1]+2]=='m' and self.board[ship[0]][ship[1]+3]=='r':
+                    #adciona um barco 1x4 horizontal
+                    
+                    self.shipsLeft[3]-=1
+                    self.row_counts[ship[0]]-=4
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]+1]-=1
+                    self.col_counts[ship[1]+2]-=1
+                    self.col_counts[ship[1]+3]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0],ship[1]+1))
+                    self.hintedShips.remove((ship[0],ship[1]+2))
+                    self.hintedShips.remove((ship[0],ship[1]+3))
+                    continue
+                    
+            # verificar na vertical         
+            if self.board[ship[0]][ship[1]] == 't':
+                if (self.board[ship[0]+1][ship[1]]=='b'):
+                    #adciona um barco 1x2 vert
+                    
+                    self.shipsLeft[1]-=1
+                    self.col_counts[ship[1]]-=2
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0]+1,ship[1]))
+                    continue
+                    
+                elif(self.board[ship[0]+1][ship[1]]=='m') and self.board[ship[0]+2][ship[1]]=='b':
+                    #adciona um barco 1x3 vert
+                    
+                    self.shipsLeft[2]-=1
+                    self.col_counts[ship[1]]-=3
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.row_counts[ship[0]+2]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0]+1,ship[1]))
+                    self.hintedShips.remove((ship[0]+2,ship[1]))
+                    continue
+                    
+                elif(self.board[ship[0]+1][ship[1]]=='m') and self.board[ship[0]+2][ship[1]]=='m' and self.board[ship[0]+3][ship[1]]=='b':
+                    #adciona um barco 1x4 vert
+                    
+                    self.shipsLeft[3]-=1
+                    self.col_counts[ship[1]]-=4
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.row_counts[ship[0]+2]-=1
+                    self.row_counts[ship[0]+3]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0]+1,ship[1]))
+                    self.hintedShips.remove((ship[0]+2,ship[1]))
+                    self.hintedShips.remove((ship[0]+3,ship[1]))
+                    continue
+
+    def shipCompleteInference(self):
+        for ship in self.hintedShips:
+            #verificar se ta nas bordas, se não tiver percorrer a procura de uma agua, ou de um right ou de um middle para inferirmos mais
+            if self.board[ship[0]][ship[1]] =='l':
+                #se estiver na penultima coluna
+                if ship[1]==8:
+                    if self.board[ship[0]][ship[1]+1]=='r':
+                        self.hintedShips.remove((ship[0],ship[1]+1))
+                    self.board[ship[0]][ship[1]+1]='r'
+                    self.row_counts[ship[0]]-=2
+                    self.col_counts[8]-=1
+                    self.col_counts[9]-=1
+                    self.shipsLeft[1]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+                
+                #se tiver uma agua 2 coordenadas a direita então é um barco de 2
+                if ship[1]<8 and (self.board[ship[0]][ship[1]+2]=='w' or self.board[ship[0]][ship[1]+2]=='.'):
+                    print('a')
+                    if self.board[ship[0]][ship[1]+1]=='r':
+                        self.hintedShips.remove((ship[0],ship[1]+1))
+                    self.board[ship[0]][ship[1]+1]='r'
+                    self.row_counts[ship[0]]-=2
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]+1]-=1
+                    self.shipsLeft[1]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+                
+                #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
+                elif ship[1]<7 and self.shipsLeft[1]==0 and (self.board[ship[0]][ship[1]+3]=='w' or self.board[ship[0]][ship[1]+3]=='.'):
+                    print('b')
+                    if self.board[ship[0]][ship[1]+2]=='r':
+                        self.hintedShips.remove((ship[0],ship[1]+2))
+                    self.board[ship[0]][ship[1]+2]='r'
+                    if self.board[ship[0]][ship[1]+1]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]+1))
+                    self.board[ship[0]][ship[1]+1]='m'
+                    self.row_counts[ship[0]]-=3
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]+1]-=1
+                    self.col_counts[ship[1]+2]-=1
+                    self.shipsLeft[2]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+                
+                #se não houver barcos de 2 nem 3 e tiver uma agua 4 coordenadas a direita então é um barco de 4
+                elif ship[1]<6 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]][ship[1]+4]=='w' or self.board[ship[0]][ship[1]+4]=='.'):
+                    print('c')
+                    if self.board[ship[0]][ship[1]+3]=='r':
+                        self.hintedShips.remove((ship[0],ship[1]+3))
+                    self.board[ship[0]][ship[1]+3]='r'
+                    if self.board[ship[0]][ship[1]+2]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]+2))
+                    self.board[ship[0]][ship[1]+2]='m'
+                    if self.board[ship[0]][ship[1]+1]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]+1))
+                    self.board[ship[0]][ship[1]+1]='m'
+                    self.row_counts[ship[0]]-=4
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]+1]-=1
+                    self.col_counts[ship[1]+2]-=1
+                    self.col_counts[ship[1]+3]-=1
+                    self.shipsLeft[3]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+
+                #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
+                for i in range(2,min(4,10-ship[1])):
+                    if self.board[ship[0]][ship[1]+i]=='r':
+                        print('d')
+                        self.hintedShips.remove((ship[0],ship[1]+i))
+                        if (i==2):
+                            if self.board[ship[0]][ship[1]+1]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]+1))
+                            self.board[ship[0]][ship[1]+1]='m'
+                            self.shipsLeft[2]-=1
+                            self.row_counts[ship[0]]-=3
+                            self.col_counts[ship[1]]-=1
+                            self.col_counts[ship[1]+1]-=1
+                            self.col_counts[ship[1]+2]-=1
+                            self.hintedShips.remove(ship)
+                            break
+                        if (i==3):
+                            if self.board[ship[0]][ship[1]+1]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]+1))
+                            self.board[ship[0]][ship[1]+1]='m'
+                            if self.board[ship[0]][ship[1]+1]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]+2))
+                            self.board[ship[0]][ship[1]+2]='m'
+                            self.shipsLeft[3]-=1
+                            self.row_counts[ship[0]]-=4
+                            self.col_counts[ship[1]]-=1
+                            self.col_counts[ship[1]+1]-=1
+                            self.col_counts[ship[1]+2]-=1
+                            self.col_counts[ship[1]+3]-=1
+                            self.hintedShips.remove(ship)
+                            break
+                continue
+
+            if self.board[ship[0]][ship[1]]=='r':
+                #se estiver na penultima coluna
+                if ship[1]==1:
+                    if self.board[ship[0]][ship[1]-1]=='l':
+                        self.hintedShips.remove((ship[0],ship[1]-1))
+                    self.board[ship[0]][ship[1]-1]='l'
+                    self.row_counts[ship[0]]-=2
+                    self.col_counts[0]-=1
+                    self.col_counts[1]-=1
+                    self.shipsLeft[1]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+                
+                #se tiver uma agua 2 coordenadas a direita então é um barco de 2
+                if ship[1]>1 and (self.board[ship[0]][ship[1]-2]=='w' or self.board[ship[0]][ship[1]-2]=='.'):
+                    if self.board[ship[0]][ship[1]-1]=='l':
+                        self.hintedShips.remove((ship[0],ship[1]-1))
+                    self.board[ship[0]][ship[1]-1]='l'
+                    self.row_counts[ship[0]]-=2
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]-1]-=1
+                    self.shipsLeft[1]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+                
+                #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
+                elif ship[1]>2 and self.shipsLeft[1]==0 and (self.board[ship[0]][ship[1]-3]=='w' or self.board[ship[0]][ship[1]-3]=='.'):
+                    if self.board[ship[0]][ship[1]-2]=='l':
+                        self.hintedShips.remove((ship[0],ship[1]-2))
+                    self.board[ship[0]][ship[1]-2]='l'
+
+                    if self.board[ship[0]][ship[1]-1]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]-1))
+                    self.board[ship[0]][ship[1]-1]='m'
+                    self.row_counts[ship[0]]-=3
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]-1]-=1
+                    self.col_counts[ship[1]-2]-=1
+                    self.shipsLeft[2]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+                
+                #se não houver barcos de 2 nem 3 e tiver uma agua 4 coordenadas a direita então é um barco de 4
+                elif ship[1]>3 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]][ship[1]-4]=='w' or self.board[ship[0]][ship[1]-4]=='.'):
+                    if self.board[ship[0]][ship[1]-3]=='l':
+                        self.hintedShips.remove((ship[0],ship[1]-3))
+                    self.board[ship[0]][ship[1]-3]='l'
+                    if self.board[ship[0]][ship[1]-2]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]-2))
+                    self.board[ship[0]][ship[1]-2]='m'
+                    if self.board[ship[0]][ship[1]-1]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]-1))
+                    self.board[ship[0]][ship[1]-1]='m'
+                    self.row_counts[ship[0]]-=4
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]-1]-=1
+                    self.col_counts[ship[1]-2]-=1
+                    self.col_counts[ship[1]-3]-=1
+                    self.shipsLeft[3]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+
+                #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
+                #TODO
+                for i in range(2,min(4,ship[1])):
+                    if self.board[ship[0]][ship[1]-i]=='l':
+                        self.hintedShips.remove((ship[0],ship[1]-i))
+                        if (i==2):
+                            if self.board[ship[0]][ship[1]-1]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]-1))
+                            self.board[ship[0]][ship[1]-1]='m'
+                            self.shipsLeft[2]-=1
+                            self.row_counts[ship[0]]-=3
+                            self.col_counts[ship[1]]-=1
+                            self.col_counts[ship[1]-1]-=1
+                            self.col_counts[ship[1]-2]-=1
+                            self.hintedShips.remove(ship)
+                            break
+                        if (i==3):
+                            if self.board[ship[0]][ship[1]-1]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]-1))
+                            self.board[ship[0]][ship[1]-1]='m'
+                            if self.board[ship[0]][ship[1]-2]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]-2))
+                            self.board[ship[0]][ship[1]-2]='m'
+                            self.shipsLeft[3]-=1
+                            self.row_counts[ship[0]]-=4
+                            self.col_counts[ship[1]]-=1
+                            self.col_counts[ship[1]-1]-=1
+                            self.col_counts[ship[1]-2]-=1
+                            self.col_counts[ship[1]-3]-=1
+                            self.hintedShips.remove(ship)
+                            break
+                continue
+
+            if self.board[ship[0]][ship[1]]=='t':
+                #se estiver na penultima coluna
+                if ship[0]==8:
+                    if self.board[ship[0]+1][ship[1]]=='b':
+                        self.hintedShips.remove((ship[0]+1,ship[1]))
+                    self.board[ship[0]+1][ship[1]]='b'
+                    self.col_counts[ship[1]]-=2
+                    self.row_counts[8]-=1
+                    self.row_counts[9]-=1
+                    self.shipsLeft[1]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+
+                if ship[0]<8 and (self.board[ship[0]+2][ship[1]]=='w' or self.board[ship[0]+2][ship[1]]=='.'):
+                    if self.board[ship[0]+1][ship[1]]=='b':
+                        self.hintedShips.remove((ship[0]+1,ship[1]))
+                    self.board[ship[0]+1][ship[1]]='b'
+                    self.col_counts[ship[1]]-=2
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.shipsLeft[1]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+                
+                #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
+                elif ship[0]<7 and self.shipsLeft[1]==0 and (self.board[ship[0]+3][ship[1]]=='w' or self.board[ship[0]+3][ship[1]]=='.'):
+                    if self.board[ship[0]+2][ship[1]]=='b':
+                        self.hintedShips.remove((ship[0]+2,ship[1]))
+                    self.board[ship[0]+2][ship[1]]='b'
+                    if self.board[ship[0]+1][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]+1,ship[1]))
+                    self.board[ship[0]+1][ship[1]]='m'
+                    self.col_counts[ship[1]]-=3
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.row_counts[ship[0]+2]-=1
+                    self.shipsLeft[2]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+
+                elif ship[0]<6 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]+4][ship[1]]=='w' or self.board[ship[0]+4][ship[1]]=='.'):
+                    if self.board[ship[0]+3][ship[1]]=='b':
+                        self.hintedShips.remove((ship[0]+3,ship[1]))
+                    self.board[ship[0]+3][ship[1]]='b'
+                    if self.board[ship[0]+2][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]+2,ship[1]))
+                    self.board[ship[0]+2][ship[1]]='m'
+                    if self.board[ship[0]+1][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]+1,ship[1]))
+                    self.board[ship[0]+1][ship[1]]='m'
+                    self.col_counts[ship[1]]-=4
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.row_counts[ship[0]+2]-=1
+                    self.row_counts[ship[0]+3]-=1
+                    self.shipsLeft[3]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+
+                #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
+                for i in range(2,min(4,10-ship[0])):
+                    if self.board[ship[0]+i][ship[1]]=='b':
+                        self.hintedShips.remove((ship[0]+i,ship[1]))
+                        if (i==2):
+                            if self.board[ship[0]+1][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]+1,ship[1]))
+                            self.board[ship[0]+1][ship[1]]='m'
+                            self.shipsLeft[2]-=1
+                            self.col_counts[ship[1]]-=3
+                            self.row_counts[ship[0]]-=1
+                            self.row_counts[ship[0]+1]-=1
+                            self.row_counts[ship[0]+2]-=1
+                            self.hintedShips.remove(ship)
+                            break
+                        if (i==3):
+                            if self.board[ship[0]+1][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]+1,ship[1]))
+                            self.board[ship[0]+1][ship[1]]='m'
+                            if self.board[ship[0]+2][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]+2,ship[1]))
+                            self.board[ship[0]+2][ship[1]]='m'
+                            self.shipsLeft[3]-=1
+                            self.col_counts[ship[1]]-=4
+                            self.row_counts[ship[0]]-=1
+                            self.row_counts[ship[0]+1]-=1
+                            self.row_counts[ship[0]+2]-=1
+                            self.row_counts[ship[0]+3]-=1
+                            self.hintedShips.remove(ship)
+                            break
+                
+                continue
+
+            if self.board[ship[0]][ship[1]]=='b':
+                #se estiver na penultima coluna
+                if ship[0]==1:
+                    if self.board[ship[0]-1][ship[1]]=='t':
+                        self.hintedShips.remove((ship[0]-1,ship[1]))
+                    self.board[ship[0]-1][ship[1]]='t'
+                    self.col_counts[ship[1]]-=2
+                    self.row_counts[0]-=1
+                    self.row_counts[1]-=1
+                    self.shipsLeft[1]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+
+                if ship[0]>1 and (self.board[ship[0]-2][ship[1]]=='w' or self.board[ship[0]-2][ship[1]]=='.'):
+                    if self.board[ship[0]-1][ship[1]]=='t':
+                        self.hintedShips.remove((ship[0]-1,ship[1]))
+                    self.board[ship[0]-1][ship[1]]='t'
+                    self.col_counts[ship[1]]-=2
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]-1]-=1
+                    self.shipsLeft[1]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+                
+                #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
+                elif ship[0]>2 and self.shipsLeft[1]==0 and (self.board[ship[0]-3][ship[1]]=='w' or self.board[ship[0]-3][ship[1]]=='.'):
+                    if self.board[ship[0]-2][ship[1]]=='t':
+                        self.hintedShips.remove((ship[0]-2,ship[1]))
+                    self.board[ship[0]-2][ship[1]]='t'
+                    if self.board[ship[0]-1][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]-1,ship[1]))
+                    self.board[ship[0]-1][ship[1]]='m'
+                    self.col_counts[ship[1]]-=3
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]-1]-=1
+                    self.row_counts[ship[0]-2]-=1
+                    self.shipsLeft[2]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+
+                elif ship[0]>3 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]-4][ship[1]]=='w' or self.board[ship[0]-4][ship[1]]=='.'):
+                    if self.board[ship[0]-3][ship[1]]=='t':
+                        self.hintedShips.remove((ship[0]-3,ship[1]))
+                    self.board[ship[0]-3][ship[1]]='t'
+                    if self.board[ship[0]-2][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]-2,ship[1]))
+                    self.board[ship[0]-2][ship[1]]='m'
+                    if self.board[ship[0]-1][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]-1,ship[1]))
+                    self.board[ship[0]-1][ship[1]]='m'
+                    self.col_counts[ship[1]]-=4
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]-1]-=1
+                    self.row_counts[ship[0]-2]-=1
+                    self.row_counts[ship[0]-3]-=1
+                    self.shipsLeft[3]-=1
+                    self.hintedShips.remove(ship)
+                    continue
+
+                #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
+                for i in range(2,min(4,ship[0])):
+                    if self.board[ship[0]-i][ship[1]]=='t':
+                        self.hintedShips.remove((ship[0]-i,ship[1]))
+                        if (i==2):
+                            if self.board[ship[0]-1][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]-1,ship[1]))
+                            self.board[ship[0]-1][ship[1]]='m'
+                            self.shipsLeft[2]-=1
+                            self.col_counts[ship[1]]-=3
+                            self.row_counts[ship[0]]-=1
+                            self.row_counts[ship[0]-1]-=1
+                            self.row_counts[ship[0]-2]-=1
+                            self.hintedShips.remove(ship)
+                            break
+                        if (i==3):
+                            if self.board[ship[0]-1][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]-1,ship[1]))
+                            self.board[ship[0]-1][ship[1]]='m'
+                            if self.board[ship[0]-2][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]-2,ship[1]))
+                            self.board[ship[0]-2][ship[1]]='m'
+                            self.shipsLeft[3]-=1
+                            self.col_counts[ship[1]]-=4
+                            self.row_counts[ship[0]]-=1
+                            self.row_counts[ship[0]-1]-=1
+                            self.row_counts[ship[0]-2]-=1
+                            self.row_counts[ship[0]-3]-=1
+                            self.hintedShips.remove(ship)
+                            break
+
+    def inferences(self):
+        #Infere colunas ou linhas a 0
+        for i in range(10):
+            if self.row_counts[i]==0:
+                for j in range(10):
+                    if self.board[i][j]=='0':
+                        self.board[i][j]="."
+
+            if self.col_counts[i]==0:
+                for j in range(10):
+                    if self.board[i][j]=='0':
+                        self.board[j][i]="."
+        #Verifica 1x2 que estao presos à parede
+            if self.board[i][8]=="l":
+                self.board[i][9]="r"
+                #meter aguas
+                self.updateSurroundOfAction((i,8,"l",2))
+                #tirar das counts
+                self.row_counts[i]-=2
+                self.col_counts[8]-=1
+                self.col_counts[9]-=1
+                self.hintedShips.remove((i,8))
+                self.shipsLeft[1]-=1
+
+            if self.board[i][1]=="r":
+                self.board[i][0]="l"
+                #meterAguas
+                self.updateSurroundOfAction((i,0,"l",2))
+                #tirar das counts
+                self.row_counts[i]-=2
+                self.col_counts[0]-=1
+                self.col_counts[1]-=1
+                self.hintedShips.remove((i,1))
+                self.shipsLeft[1]-=1
+
+            if self.board[1][i]=="b":
+                
+                self.board[0][i]="t"
+                #meterAguas
+                self.updateSurroundOfAction((0,i,"t",2))
+                #tirar das counts
+                self.col_counts[i]-=2
+                self.row_counts[0]-=1
+                self.row_counts[1]-=1
+                self.hintedShips.remove((1,i))
+                self.shipsLeft[1]-=1
+            if self.board[8][i]=="t":
+                #meterAguas
+                self.board[9][i]="b"
+                self.updateSurroundOfAction((8,i,"t",2))
+                #tirar das counts
+                self.col_counts[i]-=2
+                self.row_counts[8]-=1
+                self.row_counts[9]-=1
+                self.hintedShips.remove((8,i))
+                self.shipsLeft[1]-=1
 
     @staticmethod
     def parse_instance():
@@ -88,6 +788,7 @@ class Board:
             hint = stdin.readline().split()
             row, col = int(hint[1]), int(hint[2])
             value = hint[3].lower()
+            board.initialHints.append((row,col,value.upper()))
             if value!='w' and value!='c':
                 ship = (row,col)
                 board.hintedShips.append(ship)
@@ -96,12 +797,20 @@ class Board:
                 board.row_counts[row]-=1
                 board.col_counts[col]-=1
             board.board[row][col] = value
+            if value!='w':
+                board.updateSurroundOfCell((row,col,value))
         return board
     
     def get_inferences(self):
         self.ColumnsAndLinesDoneInference()
         
     def print_board(self) -> None:
+        for i in range(10):
+            for j in range(10):
+                print(self.board[i][j],end='')
+            print()
+
+    def print_board_with_hints(self) -> None:
         for i in range(10):
             print(self.col_counts[i], end='')
         print()
@@ -178,6 +887,7 @@ class Bimaru(Problem):
                     #adciona ao array de acoes totais
                     state.board.hintedShips.remove(ship)
                     break
+                
                 elif state.board.board[ship[0]][ship[1]] == "t":
                     #este array representa todas as maneiras de completar a hint
                     #pode ser um de 2 ?
@@ -196,6 +906,7 @@ class Bimaru(Problem):
                     #adciona ao array de acoes totais
                     state.board.hintedShips.remove(ship)
                     break
+
                 elif state.board.board[ship[0]][ship[1]] == "b":
                     #este array representa todas as maneiras de completar a hint
                     #pode ser um de 2 ?
@@ -260,7 +971,6 @@ class Bimaru(Problem):
                     break
 
         else :#barcos ao calhas
-            #print('ShipsLeft',state.board.shipsLeft)
             for i in range(3,-1,-1):
                 if state.board.shipsLeft[i]:
                     for j in range(10):
@@ -334,12 +1044,6 @@ class Bimaru(Problem):
                 for i in range(4):
                     board.row_counts[action[0]+i]-=1
             board.shipsLeft[3]-=1
-            # print('----------')
-            # print('Resulted Board:')
-            # board.print_board()
-            # print('----------')
-            # print('ShipsLeft: ' + str(board.shipsLeft))
-            # print('HintedShips: '+ str(board.hintedShips))
 
         elif (action[3]==3):
             if action[2]=='l':
@@ -357,12 +1061,6 @@ class Bimaru(Problem):
                 for i in range(3):
                     board.row_counts[action[0]+i]-=1
             board.shipsLeft[2]-=1
-            # print('----------')
-            # print('Resulted Board:')
-            # board.print_board()
-            # print('----------')
-            # print('ShipsLeft: ' + str(board.shipsLeft))
-            # print('HintedShips: '+ str(board.hintedShips))
 
         elif (action[3]==2):
             if action[2]=='l':
@@ -379,12 +1077,6 @@ class Bimaru(Problem):
                     board.row_counts[action[0]+i]-=1
 
             board.shipsLeft[1]-=1
-            # print('----------')
-            # print('Resulted Board:')
-            # board.print_board()
-            # print('----------')
-            # print('ShipsLeft: ' + str(board.shipsLeft))
-            # print('HintedShips: '+ str(board.hintedShips))
         
         elif (action[3]==1):
             board.board[action[0]][action[1]]='c'
@@ -392,14 +1084,9 @@ class Bimaru(Problem):
             board.row_counts[action[0]]-=1
 
             board.shipsLeft[0]-=1
-            # print('----------')
-            # print('Resulted Board:')
-            # board.print_board()
-            # print('----------')
-            # print('ShipsLeft: ' + str(board.shipsLeft))
-            # print('HintedShips: '+ str(board.hintedShips))
 
-        board.get_inferences()
+        board.updateSurroundOfAction(action)
+        board.ColumnsAndLinesDoneInference()
 
         return BimaruState(board)
     
@@ -407,7 +1094,7 @@ class Bimaru(Problem):
         """Retorna True se e só se o estado passado como argumento é
         um estado objetivo. Deve verificar se todas as posições do tabuleiro
         estão preenchidas de acordo com as regras do problema."""
-        return state.board.noShipsLeft()
+        return state.board.noShipsLeft() and state.board.hintsEmpty()
 
     def h(self, node: Node):
         """Função heuristica utilizada para a procura A*."""
@@ -420,8 +1107,13 @@ class Bimaru(Problem):
 
 if __name__ == "__main__":
     
+
     board = Board.parse_instance()
-    board.get_inferences()
+    board.shipCompleteInference()
+    board.ColumnsAndLinesDoneInference()
+    #board.inferences()
+    #print(board.shipsLeft)
     problem = Bimaru(BimaruState(board))
     goal_node = depth_first_tree_search(problem)
+    goal_node.state.board.updateInitialHints()
     goal_node.state.board.print_board()

@@ -240,69 +240,82 @@ class Board:
             if self.board[ship[0]][ship[1]] == 'l':
                 if (self.board[ship[0]][ship[1]+1]=='r') and ship[1] > 8 :
                     #adciona um barco 1x2 horizontal
-                    if not self.shipsLeft[1]:
-                        print("Erro ShipInferenceInitial a adicionar 1x2 horizontal")
-                        exit()
                     self.shipsLeft[1]-=1
                     self.row_counts[ship[0]]-=2
-                    if self.row_counts[ship[0]]<0:
-                        print("Erro ShipInferenceInitial a adicionar 1x2 horizon")
-                        exit()
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]+1]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0],ship[1]+1))
+                    continue
 
-                elif(self.board[ship[0]][ship[1]+1]=='m') and self.board[ship[0]+2][ship[1]]=='r'and ship[1] > 7:
+                elif(self.board[ship[0]][ship[1]+1]=='m') and self.board[ship[0]][ship[1]+2]=='r'and ship[1] > 7:
                     #adciona um barco 1x3 horizontal
-                    if not self.shipsLeft[2]:
-                        print("Erro ShipInferenceInitial a adicionar 1x3 horizontal")
-                        exit()
                     self.shipsLeft[2]-=1
                     self.row_counts[ship[0]]-=3
-                    if self.row_counts[ship[0]]<0:
-                        print("Erro ShipInferenceInitial a adicionar 1x3 horizontal")
-                        exit()
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]+1]-=1
+                    self.col_counts[ship[1]+2]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0],ship[1]+1))
+                    self.hintedShips.remove((ship[0],ship[1]+2))
+                    continue
 
-                elif(self.board[ship[0]][ship[1]+1]=='m') and self.board[ship[0]+2][ship[1]]=='m' and self.board[ship[0]+3][ship[1]]=='r' and ship[1] > 6:
+                elif(self.board[ship[0]][ship[1]+1]=='m') and self.board[ship[0]][ship[1]+2]=='m' and self.board[ship[0]][ship[1]+3]=='r' and ship[1] > 6:
                     #adciona um barco 1x4 horizontal
-                    if not self.shipsLeft[3]:
-                        print("Erro ShipInferenceInitial a adcionar 1x4 horizontal")
-                        exit()
+                    
                     self.shipsLeft[3]-=1
                     self.row_counts[ship[0]]-=4
-                    if self.row_counts[ship[0]]<0:
-                        print("Erro ShipInferenceInitial a adcionar 1x4 horizontal")
-                        exit()
-            
+                    self.col_counts[ship[1]]-=1
+                    self.col_counts[ship[1]+1]-=1
+                    self.col_counts[ship[1]+2]-=1
+                    self.col_counts[ship[1]+3]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0],ship[1]+1))
+                    self.hintedShips.remove((ship[0],ship[1]+2))
+                    self.hintedShips.remove((ship[0],ship[1]+3))
+                    continue
+                    
             # verificar na vertical         
             if self.board[ship[0]][ship[1]] == 't':
                 if (self.board[ship[0]+1][ship[1]]=='b') and ship[0] > 8 :
                     #adciona um barco 1x2 vert
-                    if not self.shipsLeft[1]:
-                        print("Erro ShipInferenceInitial a adicionar 1x2 verti")
-                        exit()
+                    
                     self.shipsLeft[1]-=1
                     self.col_counts[ship[1]]-=2
-                    if self.col_counts[ship[1]]<0:
-                        print("Erro ShipInferenceInitial a adicionar 1x2 verti")
-                        exit()
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0]+1,ship[1]))
+                    continue
+                    
                 elif(self.board[ship[0]+1][ship[1]]=='m') and self.board[ship[0]+2][ship[1]]=='b'and ship[0] > 7:
                     #adciona um barco 1x3 vert
-                    if not self.shipsLeft[2]:
-                        print("Erro ShipInferenceInitial a adicionar 1x3 verti")
-                        exit()
+                    
                     self.shipsLeft[2]-=1
                     self.col_counts[ship[1]]-=3
-                    if self.col_counts[ship[1]]<0:
-                        print("Erro ShipInferenceInitial a adicionar 1x3 verti")
-                        exit()
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.row_counts[ship[0]+2]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0]+1,ship[1]))
+                    self.hintedShips.remove((ship[0]+2,ship[1]))
+                    continue
+                    
                 elif(self.board[ship[0]+1][ship[1]]=='m') and self.board[ship[0]+2][ship[1]]=='m' and self.board[ship[0]+3][ship[1]]=='b' and ship[0] > 6:
                     #adciona um barco 1x4 vert
-                    if not self.shipsLeft[3]:
-                        print("Erro ShipInferenceInitial a adicionar 1x4 verti")
-                        exit()
+                    
                     self.shipsLeft[3]-=1
                     self.col_counts[ship[1]]-=4
-                    if self.col_counts[ship[1]]<0:
-                        print("Erro ShipInferenceInitial a adicionar 1x4 verti")
-                        exit()
+                    self.row_counts[ship[0]]-=1
+                    self.row_counts[ship[0]+1]-=1
+                    self.row_counts[ship[0]+2]-=1
+                    self.row_counts[ship[0]+3]-=1
+                    self.hintedShips.remove(ship)
+                    self.hintedShips.remove((ship[0]+1,ship[1]))
+                    self.hintedShips.remove((ship[0]+2,ship[1]))
+                    self.hintedShips.remove((ship[0]+3,ship[1]))
+                    continue
+                    
                 
     #Pode dar merda se houver 2 peças do mesmo barco no tabuleiro.TODO
     def shipCompleteInference(self):
@@ -311,6 +324,8 @@ class Board:
             if self.board[ship[0]][ship[1]] =='l':
                 #se estiver na penultima coluna
                 if ship[1]==8:
+                    if self.board[ship[0]][ship[1]+1]=='r':
+                        self.hintedShips.remove((ship[0],ship[1]+1))
                     self.board[ship[0]][ship[1]+1]='r'
                     self.row_counts[ship[0]]-=2
                     self.col_counts[8]-=1
@@ -321,6 +336,8 @@ class Board:
                 
                 #se tiver uma agua 2 coordenadas a direita então é um barco de 2
                 if ship[1]<8 and (self.board[ship[0]][ship[1]+2]=='w' or self.board[ship[0]][ship[1]+2]=='.'):
+                    if self.board[ship[0]][ship[1]+1]=='r':
+                        self.hintedShips.remove((ship[0],ship[1]+1))
                     self.board[ship[0]][ship[1]+1]='r'
                     self.row_counts[ship[0]]-=2
                     self.col_counts[ship[1]]-=1
@@ -331,7 +348,11 @@ class Board:
                 
                 #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
                 elif ship[1]<7 and self.shipsLeft[1]==0 and (self.board[ship[0]][ship[1]+3]=='w' or self.board[ship[0]][ship[1]+3]=='.'):
+                    if self.board[ship[0]][ship[1]+2]=='r':
+                        self.hintedShips.remove((ship[0],ship[1]+2))
                     self.board[ship[0]][ship[1]+2]='r'
+                    if self.board[ship[0]][ship[1]+1]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]+1))
                     self.board[ship[0]][ship[1]+1]='m'
                     self.row_counts[ship[0]]-=3
                     self.col_counts[ship[1]]-=1
@@ -343,8 +364,14 @@ class Board:
                 
                 #se não houver barcos de 2 nem 3 e tiver uma agua 4 coordenadas a direita então é um barco de 4
                 elif ship[1]<6 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]][ship[1]+4]=='w' or self.board[ship[0]][ship[1]+4]=='.'):
+                    if self.board[ship[0]][ship[1]+3]=='r':
+                        self.hintedShips.remove((ship[0],ship[1]+3))
                     self.board[ship[0]][ship[1]+3]='r'
+                    if self.board[ship[0]][ship[1]+2]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]+2))
                     self.board[ship[0]][ship[1]+2]='m'
+                    if self.board[ship[0]][ship[1]+1]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]+1))
                     self.board[ship[0]][ship[1]+1]='m'
                     self.row_counts[ship[0]]-=4
                     self.col_counts[ship[1]]-=1
@@ -358,7 +385,10 @@ class Board:
                 #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
                 for i in range(2,min(4,10-ship[1])):
                     if self.board[ship[0]][ship[1]+i]=='r':
+                        self.hintedShips.remove((ship[0],ship[1]+i))
                         if (i==2):
+                            if self.board[ship[0]][ship[1]+1]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]+1))
                             self.board[ship[0]][ship[1]+1]='m'
                             self.shipsLeft[2]-=1
                             self.row_counts[ship[0]]-=3
@@ -368,7 +398,11 @@ class Board:
                             self.hintedShips.remove(ship)
                             break
                         if (i==3):
+                            if self.board[ship[0]][ship[1]+1]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]+1))
                             self.board[ship[0]][ship[1]+1]='m'
+                            if self.board[ship[0]][ship[1]+1]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]+2))
                             self.board[ship[0]][ship[1]+2]='m'
                             self.shipsLeft[3]-=1
                             self.row_counts[ship[0]]-=4
@@ -383,6 +417,8 @@ class Board:
             if self.board[ship[0]][ship[1]]=='r':
                 #se estiver na penultima coluna
                 if ship[1]==1:
+                    if self.board[ship[0]][ship[1]-1]=='l':
+                        self.hintedShips.remove((ship[0],ship[1]-1))
                     self.board[ship[0]][ship[1]-1]='l'
                     self.row_counts[ship[0]]-=2
                     self.col_counts[0]-=1
@@ -393,6 +429,8 @@ class Board:
                 
                 #se tiver uma agua 2 coordenadas a direita então é um barco de 2
                 if ship[1]>1 and (self.board[ship[0]][ship[1]-2]=='w' or self.board[ship[0]][ship[1]-2]=='.'):
+                    if self.board[ship[0]][ship[1]-1]=='l':
+                        self.hintedShips.remove((ship[0],ship[1]-1))
                     self.board[ship[0]][ship[1]-1]='l'
                     self.row_counts[ship[0]]-=2
                     self.col_counts[ship[1]]-=1
@@ -403,7 +441,12 @@ class Board:
                 
                 #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
                 elif ship[1]>2 and self.shipsLeft[1]==0 and (self.board[ship[0]][ship[1]-3]=='w' or self.board[ship[0]][ship[1]-3]=='.'):
+                    if self.board[ship[0]][ship[1]-2]=='l':
+                        self.hintedShips.remove((ship[0],ship[1]-2))
                     self.board[ship[0]][ship[1]-2]='l'
+
+                    if self.board[ship[0]][ship[1]-1]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]-1))
                     self.board[ship[0]][ship[1]-1]='m'
                     self.row_counts[ship[0]]-=3
                     self.col_counts[ship[1]]-=1
@@ -415,8 +458,14 @@ class Board:
                 
                 #se não houver barcos de 2 nem 3 e tiver uma agua 4 coordenadas a direita então é um barco de 4
                 elif ship[1]>3 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]][ship[1]-4]=='w' or self.board[ship[0]][ship[1]-4]=='.'):
+                    if self.board[ship[0]][ship[1]-3]=='l':
+                        self.hintedShips.remove((ship[0],ship[1]-3))
                     self.board[ship[0]][ship[1]-3]='l'
+                    if self.board[ship[0]][ship[1]-2]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]-2))
                     self.board[ship[0]][ship[1]-2]='m'
+                    if self.board[ship[0]][ship[1]-1]=='m':
+                        self.hintedShips.remove((ship[0],ship[1]-1))
                     self.board[ship[0]][ship[1]-1]='m'
                     self.row_counts[ship[0]]-=4
                     self.col_counts[ship[1]]-=1
@@ -431,7 +480,10 @@ class Board:
                 #TODO
                 for i in range(2,min(4,ship[1])):
                     if self.board[ship[0]][ship[1]-i]=='l':
+                        self.hintedShips.remove((ship[0],ship[1]-i))
                         if (i==2):
+                            if self.board[ship[0]][ship[1]-1]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]-1))
                             self.board[ship[0]][ship[1]-1]='m'
                             self.shipsLeft[2]-=1
                             self.row_counts[ship[0]]-=3
@@ -441,7 +493,11 @@ class Board:
                             self.hintedShips.remove(ship)
                             break
                         if (i==3):
+                            if self.board[ship[0]][ship[1]-1]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]-1))
                             self.board[ship[0]][ship[1]-1]='m'
+                            if self.board[ship[0]][ship[1]-2]=='m':
+                                self.hintedShips.remove((ship[0],ship[1]-2))
                             self.board[ship[0]][ship[1]-2]='m'
                             self.shipsLeft[3]-=1
                             self.row_counts[ship[0]]-=4
@@ -456,6 +512,8 @@ class Board:
             if self.board[ship[0]][ship[1]]=='t':
                 #se estiver na penultima coluna
                 if ship[0]==8:
+                    if self.board[ship[0]+1][ship[1]]=='b':
+                        self.hintedShips.remove((ship[0]+1,ship[1]))
                     self.board[ship[0]+1][ship[1]]='b'
                     self.col_counts[ship[1]]-=2
                     self.row_counts[8]-=1
@@ -465,6 +523,8 @@ class Board:
                     continue
 
                 if ship[0]<8 and (self.board[ship[0]+2][ship[1]]=='w' or self.board[ship[0]+2][ship[1]]=='.'):
+                    if self.board[ship[0]+1][ship[1]]=='b':
+                        self.hintedShips.remove((ship[0]+1,ship[1]))
                     self.board[ship[0]+1][ship[1]]='b'
                     self.col_counts[ship[1]]-=2
                     self.row_counts[ship[0]]-=1
@@ -475,7 +535,11 @@ class Board:
                 
                 #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
                 elif ship[0]<7 and self.shipsLeft[1]==0 and (self.board[ship[0]+3][ship[1]]=='w' or self.board[ship[0]+3][ship[1]]=='.'):
+                    if self.board[ship[0]+2][ship[1]]=='b':
+                        self.hintedShips.remove((ship[0]+2,ship[1]))
                     self.board[ship[0]+2][ship[1]]='b'
+                    if self.board[ship[0]+1][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]+1,ship[1]))
                     self.board[ship[0]+1][ship[1]]='m'
                     self.col_counts[ship[1]]-=3
                     self.row_counts[ship[0]]-=1
@@ -486,8 +550,14 @@ class Board:
                     continue
 
                 elif ship[0]<6 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]+4][ship[1]]=='w' or self.board[ship[0]+4][ship[1]]=='.'):
+                    if self.board[ship[0]+3][ship[1]]=='b':
+                        self.hintedShips.remove((ship[0]+3,ship[1]))
                     self.board[ship[0]+3][ship[1]]='b'
+                    if self.board[ship[0]+2][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]+2,ship[1]))
                     self.board[ship[0]+2][ship[1]]='m'
+                    if self.board[ship[0]+1][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]+1,ship[1]))
                     self.board[ship[0]+1][ship[1]]='m'
                     self.col_counts[ship[1]]-=4
                     self.row_counts[ship[0]]-=1
@@ -501,7 +571,10 @@ class Board:
                 #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
                 for i in range(2,min(4,10-ship[0])):
                     if self.board[ship[0]+i][ship[1]]=='b':
+                        self.hintedShips.remove((ship[0]+i,ship[1]))
                         if (i==2):
+                            if self.board[ship[0]+1][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]+1,ship[1]))
                             self.board[ship[0]+1][ship[1]]='m'
                             self.shipsLeft[2]-=1
                             self.col_counts[ship[1]]-=3
@@ -511,7 +584,11 @@ class Board:
                             self.hintedShips.remove(ship)
                             break
                         if (i==3):
+                            if self.board[ship[0]+1][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]+1,ship[1]))
                             self.board[ship[0]+1][ship[1]]='m'
+                            if self.board[ship[0]+2][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]+2,ship[1]))
                             self.board[ship[0]+2][ship[1]]='m'
                             self.shipsLeft[3]-=1
                             self.col_counts[ship[1]]-=4
@@ -527,6 +604,8 @@ class Board:
             if self.board[ship[0]][ship[1]]=='b':
                 #se estiver na penultima coluna
                 if ship[0]==1:
+                    if self.board[ship[0]-1][ship[1]]=='t':
+                        self.hintedShips.remove((ship[0]-1,ship[1]))
                     self.board[ship[0]-1][ship[1]]='t'
                     self.col_counts[ship[1]]-=2
                     self.row_counts[0]-=1
@@ -536,6 +615,8 @@ class Board:
                     continue
 
                 if ship[0]>1 and (self.board[ship[0]-2][ship[1]]=='w' or self.board[ship[0]-2][ship[1]]=='.'):
+                    if self.board[ship[0]-1][ship[1]]=='t':
+                        self.hintedShips.remove((ship[0]-1,ship[1]))
                     self.board[ship[0]-1][ship[1]]='t'
                     self.col_counts[ship[1]]-=2
                     self.row_counts[ship[0]]-=1
@@ -546,7 +627,11 @@ class Board:
                 
                 #se não houver barcos de 2 e tiver uma agua 3 coordenadas a direita então é um barco de 3
                 elif ship[0]>2 and self.shipsLeft[1]==0 and (self.board[ship[0]-3][ship[1]]=='w' or self.board[ship[0]-3][ship[1]]=='.'):
+                    if self.board[ship[0]-2][ship[1]]=='t':
+                        self.hintedShips.remove((ship[0]-2,ship[1]))
                     self.board[ship[0]-2][ship[1]]='t'
+                    if self.board[ship[0]-1][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]-1,ship[1]))
                     self.board[ship[0]-1][ship[1]]='m'
                     self.col_counts[ship[1]]-=3
                     self.row_counts[ship[0]]-=1
@@ -557,8 +642,14 @@ class Board:
                     continue
 
                 elif ship[0]>3 and self.shipsLeft[1]==0 and self.shipsLeft[2]==0 and (self.board[ship[0]-4][ship[1]]=='w' or self.board[ship[0]-4][ship[1]]=='.'):
+                    if self.board[ship[0]-3][ship[1]]=='t':
+                        self.hintedShips.remove((ship[0]-3,ship[1]))
                     self.board[ship[0]-3][ship[1]]='t'
+                    if self.board[ship[0]-2][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]-2,ship[1]))
                     self.board[ship[0]-2][ship[1]]='m'
+                    if self.board[ship[0]-1][ship[1]]=='m':
+                        self.hintedShips.remove((ship[0]-1,ship[1]))
                     self.board[ship[0]-1][ship[1]]='m'
                     self.col_counts[ship[1]]-=4
                     self.row_counts[ship[0]]-=1
@@ -572,7 +663,10 @@ class Board:
                 #se tiver algum right no range de 2-3 então preenche o middle e cria o barco
                 for i in range(2,min(4,ship[0])):
                     if self.board[ship[0]-i][ship[1]]=='t':
+                        self.hintedShips.remove((ship[0]-i,ship[1]))
                         if (i==2):
+                            if self.board[ship[0]-1][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]-1,ship[1]))
                             self.board[ship[0]-1][ship[1]]='m'
                             self.shipsLeft[2]-=1
                             self.col_counts[ship[1]]-=3
@@ -582,7 +676,11 @@ class Board:
                             self.hintedShips.remove(ship)
                             break
                         if (i==3):
+                            if self.board[ship[0]-1][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]-1,ship[1]))
                             self.board[ship[0]-1][ship[1]]='m'
+                            if self.board[ship[0]-2][ship[1]]=='m':
+                                self.hintedShips.remove((ship[0]-2,ship[1]))
                             self.board[ship[0]-2][ship[1]]='m'
                             self.shipsLeft[3]-=1
                             self.col_counts[ship[1]]-=4
@@ -617,8 +715,6 @@ class Board:
                     continue
                 
                 if (maxrow==self.row_counts[i] and emptycellscount==self.row_counts[i]):
-                    print('DEU MERDAAAAAAAAAAAAAAAAAAA')
-                    print('i',i,'maxrow:',maxrow,'row_counts',self.row_counts[i],'emptycells',emptycellscount)
                     #adicionar barco
                     self.shipsLeft[maxrow-1]-=1 #retira o barco adicionado dos shipsLeft
                     self.row_counts[i]-=maxrow
@@ -634,7 +730,7 @@ class Board:
                         self.board[coord[0]][coord[1]-maxrow-1]='l'
                         self.col_counts[coord[1]-maxrow-1]-=1
                 elif (emptycellscount<=3 and emptycellscount==self.row_counts[i]):
-                    print('dasdasfdasfasf')
+                    
                     if (emptycellscount==2):
                         for k in range(10):
                             if (self.board[coord[0]][k]=='0'):
@@ -688,9 +784,6 @@ class Board:
                     
                 if (maxrow==self.col_counts[i] and emptycellscount==self.row_counts[i]):
                     self.shipsLeft[maxrow-1]-=1
-                    if (self.shipsLeft[maxrow-1]<0):
-                        print('spaceLeftInference: error shipsLeft is negative')
-                        exit()
                     self.col_counts[i]-=maxrow
                     if maxrow==1:
                         self.board[coord[0]][coord[1]]='c'
@@ -712,9 +805,7 @@ class Board:
                             if (self.board[k][coord[1]]=='0'):
                                 self.board[k][coord[1]]='c'
                                 self.shipsLeft[0]-=1
-                                if (self.shipsLeft[0]<0):
-                                    print('spaceLeftInference: error shipsLeft is negative')
-                                    exit()
+                                
                                 self.col_counts[coord[1]]-=1
                                 self.row_counts[k]-=1
 
@@ -723,9 +814,7 @@ class Board:
                             if self.board[k][coord[1]]=='0':
                                 self.board[k][coord[1]]='c'
                                 self.shipsLeft[0]-=1
-                                if (self.shipsLeft[0]<0):
-                                        print('spaceLeftInference: error shipsLeft is negative')
-                                        exit()
+                                
                                 self.col_counts[coord[1]]-=1
                                 self.row_counts[k]-=1
                     
@@ -736,18 +825,14 @@ class Board:
                                     self.board[k][coord[1]]='t'
                                     self.board[k+1][coord[1]]='b'
                                     self.shipsLeft[1]-=1
-                                    if (self.shipsLeft[1]<0):
-                                        print('spaceLeftInference: error shipsLeft is negative')
-                                        exit()
+                                    
                                     self.col_counts[coord[1]]-=2
                                     self.row_counts[k]-=1
                                     self.row_counts[k+1]-=1
                                 else:
                                     self.board[k][coord[1]]='c'
                                     self.shipsLeft[0]-=1
-                                    if (self.shipsLeft[0]<0):
-                                        print('spaceLeftInference: error shipsLeft is negative')
-                                        exit()
+                                    
                                     self.row_counts[k]-=1
                                     self.col_counts[coord[1]]-=1
 

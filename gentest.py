@@ -24,27 +24,27 @@ ten_by_ten_button = WebDriverWait(driver, 10).until(
 ten_by_ten_button.click()
 
 # Find and click the "Settings" button
-settings_button = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.ID, "BtnSettings"))
-)
-settings_button.click()
+# settings_button = WebDriverWait(driver, 10).until(
+#     EC.element_to_be_clickable((By.ID, "BtnSettings"))
+# )
+# settings_button.click()
 
-# Find and click the "Hard Mode" checkbox
-hard_mode_checkbox = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.ID, "ChkHardMode"))
-)
-hard_mode_checkbox.click()
+# # Find and click the "Hard Mode" checkbox
+# hard_mode_checkbox = WebDriverWait(driver, 10).until(
+#     EC.element_to_be_clickable((By.ID, "ChkHardMode"))
+# )
+# hard_mode_checkbox.click()
 
-close_button = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.CLASS_NAME, "popup-close"))
-)
-close_button.click()
+# close_button = WebDriverWait(driver, 10).until(
+#     EC.element_to_be_clickable((By.CLASS_NAME, "popup-close"))
+# )
+# close_button.click()
 
 
 
 #Ler Tabuleiro
 
-for test in range(100):
+for test in range(1):
 
     page_source = driver.page_source
 
@@ -109,11 +109,12 @@ for test in range(100):
         for hint in hints:
             file.write('HINT\t' + '\t'.join(str(value) for value in hint) + '\n')
     
-    new = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.ID, "BtnNew"))
-    )
-    new.click()
+    #new = WebDriverWait(driver, 10).until(
+    #EC.element_to_be_clickable((By.ID, "BtnNew"))
+    #)
+    #new.click()
 
     # Print the array of cell values
     # Close the browser
+sleep(5)
 driver.quit()
