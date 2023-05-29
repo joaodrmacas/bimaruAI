@@ -2,11 +2,12 @@
 # Devem alterar as classes e funções neste ficheiro de acordo com as instruções do enunciado.
 # Além das funções e classes já definidas, podem acrescentar outras que considerem pertinentes.
 
-# Grupo 00:
-# 103369 Miguel o grande
-# 000000 joao o pequeno
+# Grupo ??:
+# 103369 Miguel Parece
+# 99970 João Maçãs
 
 import sys
+import random
 import copy
 from sys import stdin
 from search import (
@@ -30,11 +31,7 @@ class BimaruState:
     def __lt__(self, other):
         return self.id < other.id
 
-    # TODO: outros metodos da classe
-
-
 class Board:
-    """Representação interna de um tabuleiro de Bimaru."""
 
     def __init__(self,row_counts,col_counts,) -> None:
         self.board = [['0' for _ in range(10)] for _ in range(10)]
@@ -1015,6 +1012,7 @@ class Bimaru(Problem):
                             
                     break
 
+        #random.shuffle(actions)
         return actions
     
     def result(self, state: BimaruState, action):
@@ -1102,8 +1100,6 @@ class Bimaru(Problem):
         pass
 
     # TODO: outros metodos da classe
-
-
 
 if __name__ == "__main__":
     
